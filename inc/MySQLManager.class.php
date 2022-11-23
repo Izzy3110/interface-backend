@@ -1,5 +1,65 @@
 <?php
 
+require_once "vendor/autoload.php";
+
+use phpseclib3\Crypt\RSA;
+
+class SecManager {
+    public mixed $private = NULL;
+    public mixed $public = NULL;
+    private string $private_key_filename = "keys/private_rsa-4096.key";
+    private string $public_key_filename = "keys/public_rsa-4096.key";
+    private bool $private_key_loaded = false;
+    private bool $public_key_loaded = false;
+
+    public function __construct() {
+        $this->init_keys();
+    }
+
+    private function init_keys(): void
+    {
+        if(!is_file($this->private_key_filename)) {
+            echo "written: ".$this->private_key_filename."<br><br>";
+            $fp = fopen($this->private_key_filename, "w");
+            $this->private = RSA::createKey(4096);
+            fwrite($fp, $this->private->__toString());
+            fclose($fp);
+        } else {
+            $this->private = RSA::loadPrivateKey(file_get_contents($this->private_key_filename));
+            $this->private_key_loaded = true;
+        }
+
+
+        if(!is_file($this->public_key_filename)) {
+            $fp = fopen($this->public_key_filename, "w");
+            $this->public = $this->private->getPublicKey();
+            fwrite($fp, $this->public->__toString());
+            fclose($fp);
+        } else {
+            $content = file_get_contents($this->public_key_filename);
+            $this->public = RSA::loadPublicKey($content);
+            $this->public_key_loaded = true;
+        }
+
+    }
+
+    public function decrypt_string($ciphertext_b64): string
+    {
+        if($this->private_key_loaded) {
+            return $this->private->decrypt(base64_decode($ciphertext_b64));
+        }
+        return "";
+    }
+
+    public function encrypt_string($text): string
+    {
+        if($this->public_key_loaded) {
+            return base64_encode($this->public->encrypt($text));
+        }
+        return base64_encode($this->private->getPublicKey()->encrypt($text));
+    }
+}
+
 class MySQLManager {
     public mysqli $conn;
     public bool $connected = false;
@@ -52,9 +112,14 @@ class MySQLManager {
 
     public mixed $is_ajax = false;
     private bool $restricted = false;
+    /**
+     * @var array|false[]
+     */
+    private array $users;
 
     function __construct($create_backup=null, $is_ajax=null, $auth_only=null)
     {
+        $this->users = [];
         if (!is_dir("../backups")) {
             mkdir("../backups");
         }
@@ -423,6 +488,53 @@ INSERT INTO `$table` VALUES ";
         }
         $this->conn->close();
     }
+
+    public function get_usernames(): array
+    {
+        $auth_table_name = "auth";
+        $search = ["id", "username"];
+        $query_base = "SELECT ".implode(", ", $search)." FROM ". $auth_table_name;
+        $result = $this->safe_query(
+            $query_base
+        );
+        if($result) {
+            $data_result = $result->fetch_all();
+            return array(
+                "success" => true,
+                "data" => $data_result,
+            );
+        }
+        return array(
+            "success" => false
+        );
+    }
+
+    public function compare_user_password($username, $password): bool
+    {
+        $res = $this->conn->query("SELECT * FROM auth WHERE username = '".$username."'");
+        if ($res->num_rows > 0) {
+            $data = $res->fetch_assoc();
+            $sec_man_d = new SecManager();
+            $exploded = explode(":", base64_decode($sec_man_d->decrypt_string($data["pass_hash"])));
+            return $exploded[1] == $password;
+        }
+        return false;
+    }
+
+    public function get_username_by_id($user_id): string|bool
+    {
+        $auth_table_name = "auth";
+        $search = ["id", "username"];
+        $query_base = "SELECT ".implode(", ", $search)." FROM ". $auth_table_name;
+        $result = $this->safe_query(
+            $query_base." WHERE id = ".$user_id
+        );
+        if($result->num_rows > 0) {
+            $ds = $result->fetch_assoc();
+            return $ds["username"];
+        }
+        return false;
+    }
     /*
      *
         public function get_categories() {
@@ -477,4 +589,33 @@ INSERT INTO `$table` VALUES ";
    );
 
    */
+    public function update_user_password(int $user_id, string $new_password) : bool
+    {
+        $update_user_password["table_name"] = "auth";
+        $update_user_password["columnn_name"] = "pass_hash";
+        $update_user_password["ident"] = "id";
+        $update_user_password["query"] = "UPDATE ".$update_user_password["table_name"]." SET ". $update_user_password["columnn_name"]." = '".mysqli_real_escape_string($this->conn, $new_password)."', pass_hash_last_update = ".time()." WHERE ".$update_user_password["ident"]." = '".$user_id."'";
+        return $this->conn->query($update_user_password["query"]);
+    }
+
+    public function generate_users_select_option_html(): string
+    {
+        $option_html = "";
+        if(!$this->users) {
+            $this->users = $this->get_usernames();
+        }
+
+        if($this->users["success"]) {
+            foreach($this->users["data"] as $user) {
+                $option_html .= '<option value="'.$user[0].'">'.$user[1].'</option>';
+            }
+        }
+        return $option_html;
+    }
+
+    public function encrypt_user_password($user_id, $pass_clear)
+    {
+        $sec_man = new SecManager();
+        return $sec_man->encrypt_string(base64_encode($this->get_username_by_id($user_id).":".$pass_clear));
+    }
 }

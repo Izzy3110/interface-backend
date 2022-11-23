@@ -1,89 +1,98 @@
+<style>
+    pre {
+        white-space: -moz-pre-wrap; /* Mozilla, supported since 1999 */
+        white-space: -pre-wrap; /* Opera */
+        white-space: -o-pre-wrap; /* Opera */
+        white-space: pre-wrap; /* CSS3 - Text module (Candidate Recommendation) http://www.w3.org/TR/css3-text/#white-space */
+        word-wrap: break-word; /* IE 5.5+ */
+    }
+    div[class^='pre_wrap'] {
+        width: 20%;
+        padding: 1em;
+    }
+    div.pre_wrap {
+        background: rgba(255,24,24,0.85);
+        color: #e8e8e8;
+    }
+    div.pre_wrap_success {
+        background: #1FFF18D8;
+        color: #0c5460;
+    }
+    .textarea_main {
+        width: 76vw;
+        min-height: 30vh;
+        padding: .3em;
+    }
+</style>
 <?php
-require_once "vendor/autoload.php";
+/*
+ *  $res = $m->compare_user_password("izzy3110", "test");
+echo "<div style='width: 20%; background: #1FFF18D8; color: #0c5460; padding: 1em'><pre>";
+var_dump($res);
+echo "</pre></div>";
 
-use phpseclib3\Crypt\RSA;
+$res = $m->compare_user_password("izzy3110", "test1");
+echo "<div style='width: 20%; background: #740F0FD8; color: #FFFFFF; padding: 1em'><pre>";
+var_dump($res);
+echo "</pre></div>";
+ *
+ */
+require_once "../inc/config.php";
+require_once "../inc/MySQLManager.class.php";
 
-class SecManager {
-    public mixed $private;
-    public mixed $public;
-    private string $private_key_filename = "private_rsa-4096.key";
-    private string $public_key_filename = "public_rsa-4096.key";
-    private bool $private_key_loaded = false;
-    private bool $public_key_loaded = false;
-
-    public function __construct() {
-        $this->init_keys();
-    }
-
-    private function init_keys(): void
-    {
-        if(!is_file($this->private_key_filename)) {
-            $fp = fopen($this->private_key_filename, "w");
-            $this->private = RSA::createKey(4096);
-            fwrite($fp, $this->private->__toString());
-            fclose($fp);
-        } else {
-            $this->private = RSA::loadPrivateKey(file_get_contents($this->private_key_filename));
-            $this->private_key_loaded = true;
-        }
-
-
-        if(!is_file($this->public_key_filename)) {
-            $fp = fopen($this->public_key_filename, "w");
-            fwrite($fp, $this->public->__toString());
-            fclose($fp);
-        } else {
-            $content = file_get_contents($this->public_key_filename);
-            $this->public = RSA::loadPublicKey($content);
-            $this->public_key_loaded = true;
-        }
-    }
-
-    public function decrypt_string($ciphertext_b64): string
-    {
-        if($this->private_key_loaded) {
-            return $this->private->decrypt(base64_decode($ciphertext_b64));
-        }
-        return "";
-    }
-
-    public function encrypt_string($text): string
-    {
-        if($this->public_key_loaded) {
-            return base64_encode($this->public->encrypt($text));
-        }
-        return base64_encode($this->private->getPublicKey()->encrypt($text));
-    }
-}
 
 ?>
+<?php
+$m = new MySQLManager($create_backup=false);
+$option_html = $m->generate_users_select_option_html();
+
+?>
+    <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
     <form action="<?php echo $_SERVER["PHP_SELF"]; ?>" method="post">
-        <label> Passwort:
-            <input type="text" name="text_input">
-        </label><input type="submit"><br>
+        <label for="select_user">Select User:</label>
+        <select id="select_user" name="user">
+            <?php
+            echo $option_html;
+            ?>
+        </select>
+        <label for="password_input"> Passwort:</label>
+        <input id="password_input" type="text" name="text_input">
+        <input type="submit"><br>
     </form>
 <?php
 
-if(isset($_POST)) {
-
+if(isset($_POST) && !empty($_POST["user"])) {
     if(isset($_POST["text_input"])) {
-        $pass_clear = $_POST["text_input"];
-        $sec_man = new SecManager();
-        $encrypted = $sec_man->encrypt_string($pass_clear);
-        $textarea = $encrypted.PHP_EOL.PHP_EOL. $pass_clear;
-        $decrypted = $sec_man->decrypt_string($encrypted);
+        $encrypted = $m->encrypt_user_password($_POST["user"], $_POST["text_input"]);
+        $textarea = "";
+        $textarea = $encrypted.PHP_EOL.PHP_EOL. $_POST["text_input"];
+        //$decrypted = $sec_man->decrypt_string($encrypted);
+        //$exploded_decrypted = explode(":", base64_decode($decrypted));
+        //if ($_POST["text_input"] == $exploded_decrypted[1]) {
+            $m->update_user_password($user_id=$_POST["user"], $new_password=$encrypted);
+        // }
+
         ?>
-        <style>
-            .textarea_main {
-                width: 76vw;
-                min-height: 30vh;
-                padding: .3em;
-            }
-        </style>
         <label>
         <textarea class="textarea_main"><?php echo $textarea; ?></textarea>
         </label><?php
 
     }
+} else {
+    $debug = true;
+    if($debug) {
+        $res = $m->compare_user_password("izzy3110", "test");
+        echo "<div class='pre_wrap_success'>tested password, true expected\n";
+        echo "<pre>";
+        var_dump($res);
+        echo "</pre>\n";
+        echo "</div>";
 
+        $res = $m->compare_user_password("izzy3110", "test1");
+        echo "<div class='pre_wrap'>tested password, false expected\n";
+        echo "    <pre>";
+        var_dump($res);
+        echo "    </pre>\n";
+        echo "</div>";
+    }
 }
