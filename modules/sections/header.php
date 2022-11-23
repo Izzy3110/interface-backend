@@ -31,7 +31,7 @@ $(page).css({
 			<?php
             if(isset($_SESSION)) {
                 ?>
-                <div class="row col-sm-1">
+                <div id="login_link_row" class="row col-sm-1">
                     <a id="login_link" href="<?php echo $_SERVER["PHP_SELF"]; ?>?logout">&raquo; logout</a>
                 </div>
             <?php
@@ -68,10 +68,13 @@ $(page).css({
         but hey, it's pure CSS magic.
         -->
         <ul id="menu">
-            <a href="/"><li>&raquo; Home</li></a>
+            <a href="/"><li>&raquo; Items (Home)</li></a>
+            <a href="/?site=backups"><li>Backups</li></a>
             <a class="link_inactive"><li>About</li></a>
+            <!--
             <a class="link_inactive"><li>Info</li></a>
             <a class="link_inactive"><li>Contact</li></a>
+            -->
             <a style="margin-top: .2rem;" href="/?logout"><li>&raquo; Logout</li></a>
             <div id="cr">© 2022 - L&S Design</div>
         </ul>

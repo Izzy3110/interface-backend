@@ -202,7 +202,8 @@ nav {
     top: 2rem;
     left: 2rem;
 
-    z-index: 1;
+    z-index: -1;
+    width: 20%;
 
     -webkit-user-select: none;
     user-select: none;
@@ -340,4 +341,8 @@ nav {
 #menuToggle input:checked ~ ul
 {
     transform: none;
+}
+
+#label_login_user, #label_login_pass {
+    color: #FFFFFF;
 }
