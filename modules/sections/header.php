@@ -1,32 +1,28 @@
 <script>
-var overlay_waiting = document.createElement("div")
-var img = document.createElement('img')
-img.src = "/images/Triangles-1s-200px.svg"
-preparing_div = document.createElement("div")
-<?php
-if(!isset($_SESSION["prepared"])) {
-    ?>
-    preparing_div.innerHTML = "<h1>Preparing...</h1>";
-    <?php
-    $_SESSION["prepared"] = true;
-}
-?>
+    function display_waiting_div() {
+        let page = document.getElementsByTagName('body')[0];
+        let overlay_waiting = document.createElement("div")
+        let preparing_div = document.createElement("div")
+        let img = document.createElement('img')
 
-preparing_div.className = "preparing_div_class"
-overlay_waiting.appendChild(preparing_div)
-overlay_waiting.appendChild(img)
-overlay_waiting.id = "waiting_div"
-overlay_waiting.className = "waiting_div_class"
-document.body.append(overlay_waiting)
-var page = document.getElementsByTagName('body')[0];
-$(page).css({
-    overflow: 'hidden'
-})
+        preparing_div.className = "preparing_div_class"
+        overlay_waiting.appendChild(preparing_div)
+
+        img.src = "/images/Triangles-1s-200px.svg"
+        overlay_waiting.appendChild(img)
+        overlay_waiting.id = "waiting_div"
+        overlay_waiting.className = "waiting_div_class"
+        document.body.append(overlay_waiting)
+
+        $(page).css({
+            overflow: 'hidden'
+        })
+    }
+
+
+    display_waiting_div()
 
 </script>
-<!--    Made by Erik Terwan    -->
-<!--   24th of November 2015   -->
-<!--        MIT License        -->
 <nav role="navigation">
 			<?php
             if(isset($_SESSION)) {
