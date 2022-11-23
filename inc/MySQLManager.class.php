@@ -111,6 +111,10 @@ class MySQLManager {
     ];
 
     public mixed $is_ajax = false;
+    /**
+     * @var false
+     */
+    public bool $display_as_table = true;
     private bool $restricted = false;
     /**
      * @var array|false[]
@@ -173,6 +177,9 @@ class MySQLManager {
                     $sql_files[] = $data;
                 }
             }
+        }
+        if($reversed) {
+            return array_reverse($sql_files);
         }
         return $sql_files;
     }
@@ -342,7 +349,6 @@ INSERT INTO `$table` VALUES ";
 
                 $data_query = "SELECT * FROM " . $current_table;
 
-
                 $this->table_results[$current_table] = $this->conn->query($data_query);
 
                 $struct_ = [];
@@ -402,6 +408,35 @@ INSERT INTO `$table` VALUES ";
 
 
                 $html_ .= "<tbody>";
+
+                if(isset($_GET["from_session"])) {
+                    echo "<pre>";
+                    if(isset($_SESSION["items"]) && !empty($_SESSION["items"])) {
+
+
+                        if ($_SESSION["items"] ==  $this->table_results[$current_table]->fetch_all()) {
+                            $items_assoc = [];
+                            foreach ($_SESSION["items"] as $k_i => $session_item) {
+                                foreach ($struct_ as $k => $row_item) {
+                                    $items_assoc[$k_i][$row_item] = $_SESSION["items"][$k_i][$k];
+                                }
+                            }
+                            $s = $this->conn->query("SELECT * FROM ".$current_table." WHERE id = '".$items_assoc[0]["id"]."'");
+                            if($s->num_rows > 0) {
+                                var_dump($s->fetch_assoc() == $items_assoc[0]);
+                            }
+                        }
+
+
+
+                    }
+
+                    echo "</pre>";
+
+                }
+
+
+
 
                 while ($data_row = $this->table_results[$current_table]->fetch_assoc()) {
                     $found_key = false;
@@ -535,60 +570,7 @@ INSERT INTO `$table` VALUES ";
         }
         return false;
     }
-    /*
-     *
-        public function get_categories() {
-        $res = $this->conn->query("SELECT * FROM itemcats");
-        $this->categories = [];
 
-        while ($row = $res->fetch_assoc()) {
-            if(in_array("order_id", array_keys($row))) {
-                $this->categories[$row["order_id"]] = $row["name"];
-            }
-        }
-    }
-
-       public function getCategoryNameById($category_id) {
-
-           if(array_key_exists(strval($category_id), array_keys($this->categories))) {
-               return $this->categories[$category_id];
-           } else {
-               $res = $this->conn->query("SELECT * FROM itemcats WHERE order_id = '".$category_id."'");
-               if($res->num_rows>0) {
-                   return $res->fetch_assoc()["name"];
-               }
-           }
-
-           return "";
-       }
-
-
-
-   public array $field_name_transversals = [
-      "cartid" => "Karten-Nummer",
-      "name" => "Name",
-      "description" => "Beschreibung",
-      "price" => "Preis",
-      "price_m" => "Preis M",
-      "price_l" => "Preis L",
-      "price_xl" => "Preis XL",
-      "price_xxl" => "Preis XXL",
-   ];
-
-
-
-   public array $twidths = array(
-      "id" => 40,
-      "category" => 80,
-      "add_id" => 50,
-      "plz" => 60,
-      "price_type_name" => 140,
-      "day" => 60,
-      "day_DE" => 60,
-      "open_morning" => 90,
-   );
-
-   */
     public function update_user_password(int $user_id, string $new_password) : bool
     {
         $update_user_password["table_name"] = "auth";
