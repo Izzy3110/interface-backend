@@ -30,50 +30,33 @@
                 <div id="login_link_row" class="row col-sm-1">
                     <a id="login_link" href="<?php echo $_SERVER["PHP_SELF"]; ?>?logout">&raquo; logout</a>
                 </div>
-            <?php
-            if(isset($_GET['logout'])) {
-            session_unset();
-            session_destroy();
-            ?>
-                <script>
-                    window.location.reload()
-                </script>
                 <?php
-            }
+                if(isset($_GET['logout'])) {
+                    session_unset();
+                    session_destroy();
+                    ?>
+                    <script>
+                        window.location.reload()
+                    </script>
+                    <?php
+                }
             }
             ?>
     <div id="menuToggle">
-        <!--
-        A fake / hidden checkbox is used as click reciever,
-        so you can use the :checked selector on it.
-        -->
-        <input type="checkbox" />
+        <label for="chk"></label>
+            <input id="chk" type="checkbox" />
 
-        <!--
-        Some spans to act as a hamburger.
-
-        They are acting like a real hamburger,
-        not that McDonalds stuff.
-        -->
         <span></span>
         <span></span>
         <span></span>
-
-        <!--
-        Too bad the menu has to be inside of the button
-        but hey, it's pure CSS magic.
-        -->
         <ul id="menu">
-            <a href="/"><li>&raquo; Items (Home)</li></a>
-            <a href="/?site=backups"><li>Backups</li></a>
-            <a class="link_inactive"><li>About</li></a>
-            <!--
-            <a class="link_inactive"><li>Info</li></a>
-            <a class="link_inactive"><li>Contact</li></a>
-            -->
-            <a style="margin-top: .2rem;" href="/?logout"><li>&raquo; Logout</li></a>
+            <li><a href="/">&raquo; Items (Home)</a></li>
+            <li><a href="/?site=backups">Backups</a></li>
+            <li><a class="link_inactive">About</a></li>
+            <li><a style="margin-top: .2rem;" href="/?logout">&raquo; Logout</a></li>
             <div id="cr">© 2022 - L&S Design</div>
         </ul>
+
     </div>
 </nav>
 <section id="header">
@@ -85,16 +68,6 @@
             <div class="row col-sm-7">
         <h3>Data Management</h3>
             </div>
-            
         </div>
     </div>
 </section>
-
-<!--
-<div class="preview_container_btn">
-
-    <input id="save_changes_btn" class="changes_btn save_btn" type="button" value="Änderungen speichern" onclick="update_database()" disabled="disabled">
-    <input class="changes_btn" type="button" value="Änderungen anzeigen" onclick="fadeInElement(this)">
-    <input class="changes_reset_btn changes_btn" type="button" value="Änderungen zurücksetzen" onclick="resetChanges()">
-</div>
--->
