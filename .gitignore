@@ -3,5 +3,4 @@ composer.lock
 composer.phar
 .idea/dataSources/
 inc/config.php
-keys/
 vendor/
