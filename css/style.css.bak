@@ -1,0 +1,38 @@
+/* Accordion responsive breakpoint */
+@media screen and (max-width: 768px) {
+
+    #container > div[id^='tab-'] > div > table > tbody > tr:nth-child(1) > td {
+        background: #7ea4c6;
+        color: #EFEFEF;
+        text-shadow: 1px 1px #333;
+    }
+    #container > div[id^='tab-'] > div > table > tbody > tr:nth-child(1) > td:nth-child(1) {
+        background: #82da04;
+    }
+
+    #container > div[id^='tab-'] > div > table > tbody > tr:nth-child(1) > td:nth-child(n+4) {
+        background: #ee5c68;
+    }
+}
+
+@media screen and (min-width: 1850px) {
+    #container > div[id^='tab-'] > div > table > tr {
+        font-size: 1.9rem;
+    }
+
+    .footer {
+        position: fixed;
+        bottom: 0px;
+        width: 200px;
+        right: 0px;
+        height: 14px;
+        background: #efefef;
+    }
+
+    #container > div[id^='tab-'] > div > table > tbody > tr:nth-child(1) > td {
+        background: #00ab94;
+        color: #EFEFEF;
+        text-shadow: 1px 1px #333;
+    }
+
+}

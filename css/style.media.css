@@ -1,0 +1,97 @@
+@media only screen and (max-width: 600px) {
+    select#select_file {
+        max-width: 320px;
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    select#select_file {
+        max-width: 85vw;
+    }
+}
+
+@media screen and (max-width: 425px) {
+    .controls_btn {
+        min-width: 85vw;
+    }
+
+    section#header {
+        background: #333;
+        padding: .8em;
+
+    }
+
+    #login_link {
+        font-size: 2.0rem;
+        margin-top: 1vh;
+        display: block;
+        max-width: 16rem;
+    }
+
+    #header_headline > h1 {
+        font-size: 2rem !important;
+        margin: 0 !important;;
+        padding: 0 !important;;
+    }
+
+    #header_headline > h3 {
+        line-height: 27px;
+        margin: 0 !important;
+        padding: 0 !important;;
+    }
+
+    body > div > div > h2, body > div > div > h4 {
+        padding: .4em;
+    }
+}
+
+@media screen and (min-width: 426px) {
+    #header_headline > h1 {
+        font-size: 4rem !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 30vw;
+        float: left;
+    }
+
+    #header_headline > h3 {
+        line-height: 27px;
+        margin: 0 !important;
+        padding: 0 !important;
+        float: left;
+    }
+
+    #login_link {
+        font-size: 2.5rem;
+        display: block;
+        max-width: 16rem;
+    }
+}
+
+@media screen and (max-width: 320px) {
+    pre > div {
+        width: 1vw;
+    }
+
+    .header_headline_container {
+        text-align: center;
+        margin: .5em .5em 1em;
+        padding: 0.35rem;
+    }
+
+}
+
+@media screen and (max-width: 320px) {
+    pre > div {
+        width: 1vw;
+    }
+
+    .header_headline_container {
+        text-align: center;
+        margin: .5em .5em 1em;
+        border: 1px solid #7070707d;
+        padding: 0.35rem;
+        box-shadow: 3px 3px #b7b7b74a;
+    }
+
+}

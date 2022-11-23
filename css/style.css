@@ -1,0 +1,188 @@
+.noscroll {
+    position: fixed!important
+}
+
+#waiting_div {
+    z-index: 600000;
+    position: fixed;
+    opacity: .625;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+}
+
+.waiting_div_class {
+    text-align: center;
+}
+
+#controls > h2 {
+    letter-spacing: .2rem;
+}
+
+.table_name {
+    display: block;
+    background: #85d379;
+    text-shadow: 1px 1px #111;
+    padding: 0.2em 0.2em 0.2em 1.2em;
+    margin-bottom: 1.5em;
+    box-shadow: 4px -4px #efefef;
+
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    font-size: .8rem;
+}
+
+section#header  {
+    font-size: 1.2rem;
+    margin-top: 7vh;
+}
+
+.header_headline_container {
+    text-align: center;
+    margin: .5em .5em 1em;
+    padding: 0.35rem;
+}
+
+.text_right {
+    text-align: right;
+}
+
+.login_form_container {
+    min-width: 46vw;
+}
+
+.changes_detected {
+    width: 1rem;
+    height: 1rem;
+
+    position: fixed;
+    top: 2em;
+    right: 2em;
+}
+
+.input_width {
+    width: 74vw;
+}
+
+.main_table {
+    display: table;
+}
+
+.main_row {
+    display: table-row;
+}
+
+#controls {
+    padding: 1em;
+    margin: .8em;
+    max-width: 90%;
+}
+
+#preview_table.closed {
+    display: none;
+}
+
+#preview_table {
+    position: fixed;
+    right: -755px;
+    z-index: 100;
+    top: 12.5vh;
+}
+
+.preview_container_btn {
+    width: 100%; max-width: 100%;
+    top: 5.5vh;
+    right: 2vw;
+    z-index: 150;
+}
+
+.fadeIn_btn {
+    width: 46vw;
+    height: 2vh;
+}
+
+.blur   {
+    filter: blur(5px);
+    -webkit-filter: blur(5px);
+    -moz-filter: blur(5px);
+    -o-filter: blur(5px);
+    -ms-filter: blur(5px);
+}
+
+#overlay    {
+    position: fixed;
+    display: none;
+    left: 0px;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    z-index: 999;
+}
+
+.changes_btn {
+    width: 100vw;
+    height: 2vh;
+    font-weight: bold;
+}
+
+.save_btn {
+    font-weight: bold;
+}
+
+.preview_container_btn {
+    min-height: 16vh;
+}
+
+.preview_container_btn > input[type='button'] {
+    min-height: 5vh;
+}
+
+select#select_file {
+    height: 8vh;
+    margin: 0 auto;
+    cursor: pointer;
+    box-sizing: border-box;
+    white-space: normal;
+    word-wrap: break-word;
+    padding: 0 0.2rem 0 0.2rem;
+}
+
+.login_form_container > form > label {
+    padding: 1rem;
+    min-width: 40vw;
+}
+
+#base_table_length, #base_table_filter {
+    text-align: left;
+}
+
+div.legend_width {
+    width: 140px;
+}
+
+div.row {
+    display: table-row;
+}
+
+div.cell {
+    display: table-cell;
+}
+
+div.table_full {
+    display: table;
+    width: 100%;
+    max-width: 100%;
+}
+
+.data_row {
+    margin-bottom:1em;
+}
+
+input {
+    -webkit-appearance: none;
+}
